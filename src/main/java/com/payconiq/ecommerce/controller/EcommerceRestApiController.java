@@ -1,8 +1,12 @@
 package com.payconiq.ecommerce.controller;
 
-import static com.payconiq.ecommerce.util.EcommerceUtils.*;
-
-import static com.payconiq.ecommerce.util.EcommerceConstants.*;
+import static com.payconiq.ecommerce.util.EcommerceConstants.INTERFACE_NAME;
+import static com.payconiq.ecommerce.util.EcommerceConstants.SYSTEM_NAME;
+import static com.payconiq.ecommerce.util.EcommerceConstants.UUID_HEADER;
+import static com.payconiq.ecommerce.util.EcommerceLogConstants.EX;
+import static com.payconiq.ecommerce.util.EcommerceLogConstants.IN_REQ;
+import static com.payconiq.ecommerce.util.EcommerceLogConstants.IN_RES;
+import static com.payconiq.ecommerce.util.EcommerceUtils.addResponseHeaders;
 import static com.payconiq.ecommerce.util.EcommerceUtils.getCurrentDateTimeStr;
 
 import java.util.Collection;
@@ -30,8 +34,6 @@ import com.payconiq.ecommerce.commons.PerfLog;
 import com.payconiq.ecommerce.exception.EcommerceException;
 import com.payconiq.ecommerce.service.StockService;
 import com.payconiq.ecommerce.util.CustomErrorType;
-import com.payconiq.ecommerce.util.EcommerceConstants;
-import com.payconiq.ecommerce.util.EcommerceLogConstants;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -49,22 +51,20 @@ public class EcommerceRestApiController {
 	@RequestMapping(value = "/stocks/", method = RequestMethod.GET)
 	public ResponseEntity<?> listAllStocks(@RequestHeader(value = UUID_HEADER, required = false) String uuid) {
 
-		log.debug(EcommerceLogConstants.IN_REQ, MDC.get(SYSTEM_NAME), MDC.get(INTERFACE_NAME));
-		
+		log.debug(IN_REQ, MDC.get(SYSTEM_NAME), MDC.get(INTERFACE_NAME));
+
 		Collection<Stock> stocks = null;
 		try {
 			stocks = stockService.findAllStocks();
 		} catch (IllegalArgumentException iae) {
-			log.error(EcommerceLogConstants.EX, "listAllStocks", "IllegalArgumentException", iae.getMessage(), iae,
-					iae);
+			log.error(EX, "listAllStocks", "IllegalArgumentException", iae.getMessage(), iae, iae);
 			return prepareResponse(iae, uuid);
 		} catch (Exception e) {
-			log.error(EcommerceLogConstants.EX, "listAllStocks", "Exception", e.getMessage(), e, e);
+			log.error(EX, "listAllStocks", "Exception", e.getMessage(), e, e);
 			return prepareResponse(e, uuid);
 		}
-		log.debug(EcommerceLogConstants.IN_RES, MDC.get(SYSTEM_NAME), MDC.get(INTERFACE_NAME),
-				stocks);
-		return new ResponseEntity<Collection<Stock>>(stocks,addResponseHeaders(uuid), HttpStatus.OK);
+		log.debug(IN_RES, MDC.get(SYSTEM_NAME), MDC.get(INTERFACE_NAME), stocks);
+		return new ResponseEntity<Collection<Stock>>(stocks, addResponseHeaders(uuid), HttpStatus.OK);
 
 	}
 
@@ -74,8 +74,7 @@ public class EcommerceRestApiController {
 	@RequestMapping(value = "/stocks/{id}", method = RequestMethod.GET)
 	public ResponseEntity<?> getStock(@PathVariable("id") long id,
 			@RequestHeader(value = UUID_HEADER, required = false) String uuid) {
-		log.debug(EcommerceLogConstants.IN_REQ, MDC.get(SYSTEM_NAME), MDC.get(INTERFACE_NAME),
-				id);
+		log.debug(IN_REQ, MDC.get(SYSTEM_NAME), MDC.get(INTERFACE_NAME), id);
 		Stock stock = null;
 		try {
 			stock = stockService.findById(id);
@@ -85,15 +84,14 @@ public class EcommerceRestApiController {
 						HttpStatus.NOT_FOUND);
 			}
 		} catch (IllegalArgumentException iae) {
-			log.error(EcommerceLogConstants.EX, "getStock", "IllegalArgumentException", iae.getMessage(), iae, iae);
+			log.error(EX, "getStock", "IllegalArgumentException", iae.getMessage(), iae, iae);
 			return prepareResponse(iae, uuid);
 		} catch (Exception e) {
-			log.error(EcommerceLogConstants.EX, "getStock", "Exception", e.getMessage(), e, e);
+			log.error(EX, "getStock", "Exception", e.getMessage(), e, e);
 			return prepareResponse(e, uuid);
 		}
-		log.debug(EcommerceLogConstants.IN_RES, MDC.get(SYSTEM_NAME), MDC.get(INTERFACE_NAME),
-				stock);
-		return new ResponseEntity<Stock>(stock,addResponseHeaders(uuid), HttpStatus.OK);
+		log.debug(IN_RES, MDC.get(SYSTEM_NAME), MDC.get(INTERFACE_NAME), stock);
+		return new ResponseEntity<Stock>(stock, addResponseHeaders(uuid), HttpStatus.OK);
 	}
 
 	// -------------------Create a Stock-------------------------------------------
@@ -102,8 +100,7 @@ public class EcommerceRestApiController {
 	@RequestMapping(value = "/stocks/", method = RequestMethod.POST)
 	public ResponseEntity<?> createStock(@RequestHeader(value = UUID_HEADER, required = false) String uuid,
 			@RequestBody @Valid Stock stock, UriComponentsBuilder ucBuilder) {
-		log.debug(EcommerceLogConstants.IN_REQ, MDC.get(SYSTEM_NAME), MDC.get(INTERFACE_NAME),
-				stock);
+		log.debug(IN_REQ, MDC.get(SYSTEM_NAME), MDC.get(INTERFACE_NAME), stock);
 		try {
 			if (stockService.isStockExist(stock)) {
 				log.error("Unable to create. A Stock with name {} already exist", stock.getName());
@@ -115,30 +112,26 @@ public class EcommerceRestApiController {
 			stockService.saveStock(stock);
 			HttpHeaders headers = new HttpHeaders();
 			headers.setLocation(ucBuilder.path("/api/stocks/{id}").buildAndExpand(stock.getId()).toUri());
-			log.debug(EcommerceLogConstants.IN_RES, MDC.get(SYSTEM_NAME), MDC.get(INTERFACE_NAME),
-					HttpStatus.CREATED);
+			log.debug(IN_RES, MDC.get(SYSTEM_NAME), MDC.get(INTERFACE_NAME), HttpStatus.CREATED);
 			return new ResponseEntity<String>(headers, HttpStatus.CREATED);
 		} catch (IllegalArgumentException iae) {
-			log.error(EcommerceLogConstants.EX, "createStock", "IllegalArgumentException", iae.getMessage(), iae, iae);
+			log.error(EX, "createStock", "IllegalArgumentException", iae.getMessage(), iae, iae);
 			return prepareResponse(iae, uuid);
 		} catch (Exception e) {
-			log.error(EcommerceLogConstants.EX, "createStock", "Exception", e.getMessage(), e, e);
+			log.error(EX, "createStock", "Exception", e.getMessage(), e, e);
 			return prepareResponse(e, uuid);
 		}
-		
 
 	}
 
 	// ------------------- Update a Stock ------------------------------------------------
 
-	
 	@PerfLog
 	@RequestMapping(value = "/stocks/{id}", method = RequestMethod.PUT)
 	public ResponseEntity<?> updateStock(@PathVariable("id") long id,
 			@RequestHeader(value = UUID_HEADER, required = false) String uuid, @RequestBody Stock stock) {
 
-		log.debug(EcommerceLogConstants.IN_REQ, MDC.get(SYSTEM_NAME), MDC.get(INTERFACE_NAME),
-				stock);
+		log.debug(IN_REQ, MDC.get(SYSTEM_NAME), MDC.get(INTERFACE_NAME), stock);
 		try {
 
 			Stock currentStock = stockService.findById(id);
@@ -152,14 +145,13 @@ public class EcommerceRestApiController {
 			currentStock.setTimestamp(getCurrentDateTimeStr());
 
 			stockService.updateStock(currentStock);
-			log.debug(EcommerceLogConstants.IN_RES, MDC.get(SYSTEM_NAME), MDC.get(INTERFACE_NAME),
-					HttpStatus.OK);
-			return new ResponseEntity<Stock>(currentStock,addResponseHeaders(uuid), HttpStatus.OK);
+			log.debug(IN_RES, MDC.get(SYSTEM_NAME), MDC.get(INTERFACE_NAME), HttpStatus.OK);
+			return new ResponseEntity<Stock>(currentStock, addResponseHeaders(uuid), HttpStatus.OK);
 		} catch (IllegalArgumentException iae) {
-			log.error(EcommerceLogConstants.EX, "updateStock", "IllegalArgumentException", iae.getMessage(), iae, iae);
+			log.error(EX, "updateStock", "IllegalArgumentException", iae.getMessage(), iae, iae);
 			return prepareResponse(iae, uuid);
 		} catch (Exception e) {
-			log.error(EcommerceLogConstants.EX, "updateStock", "Exception", e.getMessage(), e, e);
+			log.error(EX, "updateStock", "Exception", e.getMessage(), e, e);
 			return prepareResponse(e, uuid);
 		}
 
