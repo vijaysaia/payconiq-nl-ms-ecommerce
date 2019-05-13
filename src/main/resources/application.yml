@@ -1,0 +1,25 @@
+server:
+  port: 8080
+  servlet:
+    contextPath: /ecommerce
+  
+logging:
+    level:
+      org.springframework.web.filter.CommonsRequestLoggingFilter: DEBUG
+      com.payconiq.ecommerce: DEBUG
+ 
+---
+spring:
+  profiles: local, default
+
+---
+spring:
+  profiles: sit
+ 
+---
+spring:
+  profiles: uat
+    
+---
+spring:
+  profiles: prod

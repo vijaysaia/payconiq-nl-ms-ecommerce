@@ -1,0 +1,79 @@
+
+{
+	"variables": [],
+	"info": {
+		"name": "payconiq-nl-ecommerce",
+		"_postman_id": "9ec6856f-45bf-86c2-8d36-9ac82010ab43",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "listStocks",
+			"request": {
+				"url": "localhost:8080/ecommerce/api/stocks/",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "createStock",
+			"request": {
+				"url": "localhost:8080/ecommerce/api/stocks/",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "uuid",
+						"value": "vijay3434",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "\t{\n        \"id\":1012,\n        \"name\": \"ATT\",\n        \"currentPrice\": 201.8,\n        \"timestamp\": \"2019-05-09 01:36:53\"\n        \n\t}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "updateStock",
+			"request": {
+				"url": "localhost:8080/ecommerce/api/stocks/101",
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "\t{\n\t\t\"id\": 101,\n        \"name\": \"BNP Fortis1\",\n        \"currentPrice\": 202.8,\n        \"timestamp\": \"2019-05-09 01:36:53\"\n\t}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "findStock",
+			"request": {
+				"url": "localhost:8080/ecommerce/api/stocks/104",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}

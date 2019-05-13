@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="DEBUG">
+	<Appenders>
+		<Console name="ConsoleAppender" target="SYSTEM_OUT" >
+			<PatternLayout
+				pattern="%d [%t] %-5level  [%X{uuid}]  %logger{36} - %msg%throwable %n" />
+		</Console>
+		<File name="FileAppender" fileName="logs/xmlfilelog.log">
+			<PatternLayout
+				pattern="%d [%t] %-5level %logger{36} - %msg%n%throwable" />
+		</File>
+	</Appenders>
+	<Loggers>
+		<AsyncRoot level="WARN" additivity="false">
+			<AppenderRef ref="ConsoleAppender" />
+		</AsyncRoot>
+		<AsyncLogger name="org.springframework" level="INFO" additivity="false">
+			<AppenderRef ref="ConsoleAppender" />
+		</AsyncLogger>
+		
+		<AsyncLogger name="com.payconiq.ecommerce" level="DEBUG" additivity="false">
+			<AppenderRef ref="ConsoleAppender" />
+		</AsyncLogger>
+		
+		
+	</Loggers>
+</Configuration>
